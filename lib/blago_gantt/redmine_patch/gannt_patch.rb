@@ -15,56 +15,56 @@ module BlagoGantt
     end
 
     module InstanceMethods
-	def view_hooked
-		@view_hooked ? "view hooked is #{@view_hooked}" : "view is not hooked"
-	end
-	def blago_extended
-		"Blago instance extended"
-	end
-	def view=(new_view)
-		@view_hooked = true
-		@view = BlagoGantt::ViewPatch.new(new_view)
-	end
+  def view_hooked
+    @view_hooked ? "view hooked is #{@view_hooked}" : "view is not hooked"
+  end
+  def blago_extended
+    "Blago instance extended"
+  end
+  def view=(new_view)
+    @view_hooked = true
+    @view = BlagoGantt::ViewPatch.new(new_view)
+  end
     end
 
     module ClassMethods
-	def blago_extended
-		"Blago class extended"
-	end
-	def view=(new_view)
-		@view_hooked = true
-		@view = BlagoGantt::ViewPatch.new(new_view)
-	end
+  def blago_extended
+    "Blago class extended"
+  end
+  def view=(new_view)
+    @view_hooked = true
+    @view = BlagoGantt::ViewPatch.new(new_view)
+  end
     end
 
   end
   
   class ViewPatch < BasicObject
-	def initialize(view)
-		@view = view
-	end
-	
-	def link_to_issue(issue, options={})
-		title = nil
-		subject = nil
-		text = options[:tracker] == false ? "##{issue.id} tracker false" : "#{issue.tracker} ##{issue.id} tracker true"
-		if options[:subject] == false
-		  title = issue.subject.truncate(60)
-		else
-		  subject = "su " + issue.subject
-		  if truncate_length = options[:truncate]
-			subject = subject.truncate(truncate_length)
-		  end
-		end
-		only_path = options[:only_path].nil? ? true : options[:only_path]
-		s = link_to(text, issue_url(issue, :only_path => only_path),
-					:class => issue.css_classes, :title => title)
-		s << h(": #{subject}") if subject
-		s = h("#{issue.project} - ") + s if options[:project]
-		s
-	end	
-	
-	def method_missing(sym, *args, &blk)
+  def initialize(view)
+    @view = view
+  end
+  
+  def link_to_issue(issue, options={})
+    title = nil
+    subject = nil
+    text = options[:tracker] == false ? "##{issue.id} tracker false" : "#{issue.tracker} ##{issue.id} tracker true"
+    if options[:subject] == false
+      title = issue.subject.truncate(60)
+    else
+      subject = "su " + issue.subject
+      if truncate_length = options[:truncate]
+      subject = subject.truncate(truncate_length)
+      end
+    end
+    only_path = options[:only_path].nil? ? true : options[:only_path]
+    s = link_to(text, issue_url(issue, :only_path => only_path),
+          :class => issue.css_classes, :title => title)
+    s << h(": #{subject}") if subject
+    s = h("#{issue.project} - ") + s if options[:project]
+    s
+  end 
+  
+  def method_missing(sym, *args, &blk)
       @view.send(sym, *args, &blk)
     end
   end
