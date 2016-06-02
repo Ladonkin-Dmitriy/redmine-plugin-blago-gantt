@@ -5,13 +5,14 @@ module BlagoGantt
       base.extend(ClassMethods)
       base.send(:include, InstanceMethods)
 
-     # base.class_eval do
-     #
-     #   def link_to_project_with_easy_gantt(project, options = {})
-     #     { controller: 'easy_gantt', action: 'issues', project_id: project }
-     #   end
-     #
-     # end
+      base.class_eval do
+     
+  def view=(new_view)
+    @view_hooked = true
+    @view = BlagoGantt::ViewPatch.new(new_view)
+  end
+     
+      end
     end
 
     module InstanceMethods
@@ -20,10 +21,6 @@ module BlagoGantt
   end
   def blago_extended
     "Blago instance extended"
-  end
-  def view=(new_view)
-    @view_hooked = true
-    @view = BlagoGantt::ViewPatch.new(new_view)
   end
     end
 
@@ -70,4 +67,4 @@ module BlagoGantt
   end
 end
 
-#RedmineExtensions::PatchManager.register_helper_patch 'Redmine::Helpers::Gantt', 'BlagoGantt::RedmineHelpersGanttPatch'
+RedmineExtensions::PatchManager.register_helper_patch 'Redmine::Helpers::Gantt', 'BlagoGantt::RedmineHelpersGanttPatch'
