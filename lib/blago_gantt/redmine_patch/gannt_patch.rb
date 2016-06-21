@@ -44,19 +44,20 @@ module BlagoGantt
   def link_to_issue(issue, options={})
     title = nil
     subject = nil
-    text = options[:tracker] == false ? "##{issue.id} tracker false" : "#{issue.tracker} ##{issue.id} tracker true"
+    text = options[:tracker] == false ? "##{issue.id}" : "#{issue.tracker.slice(0) } ##{issue.id}"
     if options[:subject] == false
       title = issue.subject.truncate(60)
     else
-      subject = "su " + issue.subject
+      subject =  issue.subject
       if truncate_length = options[:truncate]
       subject = subject.truncate(truncate_length)
       end
     end
     only_path = options[:only_path].nil? ? true : options[:only_path]
+    text += " " + subject if subject
     s = link_to(text, issue_url(issue, :only_path => only_path),
           :class => issue.css_classes, :title => title)
-    s << h(": #{subject}") if subject
+    #s << h(": #{subject}") if subject
     s = h("#{issue.project} - ") + s if options[:project]
     s
   end 
