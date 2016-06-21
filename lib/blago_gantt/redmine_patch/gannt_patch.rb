@@ -44,7 +44,7 @@ module BlagoGantt
   def link_to_issue(issue, options={})
     title = nil
     subject = nil
-    text = options[:tracker] == false ? "##{issue.id}" : "#{issue.tracker[0, 2] } ##{issue.id}"
+    text = options[:tracker] == false ? "##{issue.id}" : "#{issue.tracker.to_s[0, 2] } ##{issue.id}"
     if options[:subject] == false
       title = issue.subject.truncate(60)
     else
